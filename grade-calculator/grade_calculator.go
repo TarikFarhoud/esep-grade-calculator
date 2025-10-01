@@ -1,9 +1,7 @@
 package esepunittests
 
 type GradeCalculator struct {
-	assignments []Grade
-	exams       []Grade
-	essays      []Grade
+	scoreDetails []Grade
 }
 
 type GradeType int
@@ -32,9 +30,7 @@ type Grade struct {
 
 func NewGradeCalculator() *GradeCalculator {
 	return &GradeCalculator{
-		assignments: make([]Grade, 0),
-		exams:       make([]Grade, 0),
-		essays:      make([]Grade, 0),
+		scoreDetails: make([]Grade, 0),
 	}
 }
 
@@ -55,44 +51,43 @@ func (gc *GradeCalculator) GetFinalGrade() string {
 }
 
 func (gc *GradeCalculator) AddGrade(name string, grade int, gradeType GradeType) {
-	switch gradeType {
-	case Assignment:
-		gc.assignments = append(gc.assignments, Grade{
-			Name:  name,
-			Grade: grade,
-			Type:  Assignment,
-		})
-	case Exam:
-		gc.exams = append(gc.exams, Grade{
-			Name:  name,
-			Grade: grade,
-			Type:  Exam,
-		})
-	case Essay:
-		gc.essays = append(gc.essays, Grade{
-			Name:  name,
-			Grade: grade,
-			Type:  Essay,
-		})
-	}
+	gc.scoreDetails = append(gc.scoreDetails, Grade{
+		Name:  name,
+		Grade: grade,
+		Type:  gradeType,
+	})
 }
 
 func (gc *GradeCalculator) calculateNumericalGrade() int {
-	assignment_average := computeAverage(gc.assignments)
-	exam_average := computeAverage(gc.exams)
-	essay_average := computeAverage(gc.essays)
+	assignment_average, exam_average, essay_average := computeAverage(gc.scoreDetails)
 
 	weighted_grade := float64(assignment_average)*.5 + float64(exam_average)*.35 + float64(essay_average)*.15
 
 	return int(weighted_grade)
 }
 
-func computeAverage(grades []Grade) int {
-	sum := 0
+func computeAverage(grades []Grade) (int, int, int) {
+	sumAssignments := 0
+	sumExams := 0
+	sumEssays := 0
+
+	numberAssignment := 0
+	numberExam := 0
+	numberEssay := 0
 
 	for _, value := range grades {
-		sum += value.Grade
+		if value.Type == Assignment {
+			sumAssignments += value.Grade
+			numberAssignment += 1
+		} else if value.Type == Exam {
+			sumExams += value.Grade
+			numberExam += 1
+		} else {
+			sumEssays += value.Grade
+			numberEssay += 1
+		}
+
 	}
 
-	return sum / len(grades)
+	return sumAssignments / numberAssignment, sumExams / numberExam, sumEssays / numberEssay
 }
