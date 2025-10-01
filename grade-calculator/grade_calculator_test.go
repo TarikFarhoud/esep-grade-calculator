@@ -111,3 +111,35 @@ func TestStringMapping(t *testing.T) {
 		t.Errorf("Expected String to return '%s'; got '%s' instead", expected_string, actual_string)
 	}
 }
+
+func TestPass(t *testing.T) {
+	expected_string := "Pass"
+
+	gradeCalculator := NewGradeCalculator()
+
+	gradeCalculator.AddGrade("open source assignment", 100, Assignment)
+	gradeCalculator.AddGrade("exam 1", 100, Exam)
+	gradeCalculator.AddGrade("essay on ai ethics", 100, Essay)
+
+	actual_string := gradeCalculator.GetPassOrFail()
+
+	if expected_string != actual_string {
+		t.Errorf("Expected GetGrade to return '%s'; got '%s' instead", expected_string, actual_string)
+	}
+}
+
+func TestFail(t *testing.T) {
+	expected_string := "Fail"
+
+	gradeCalculator := NewGradeCalculator()
+
+	gradeCalculator.AddGrade("open source assignment", 25, Assignment)
+	gradeCalculator.AddGrade("exam 1", 24, Exam)
+	gradeCalculator.AddGrade("essay on ai ethics", 23, Essay)
+
+	actual_string := gradeCalculator.GetPassOrFail()
+
+	if expected_string != actual_string {
+		t.Errorf("Expected GetGrade to return '%s'; got '%s' instead", expected_string, actual_string)
+	}
+}
